@@ -64,11 +64,32 @@ cat << EOF > "$CONTENTS_DIR/Info.plist"
 </plist>
 EOF
 
+# Clean attributes & codesign
+xattr -cr "$APP_DIR"
+codesign --force --deep --sign - "$APP_DIR"
+
 echo "✅ App bundle created at: $APP_DIR"
 echo "🚀 Copying to Desktop for easy access..."
 killall "$APP_NAME" SmartPDFMaker 2>/dev/null || true
-rm -rf "/Users/kaziomar/Desktop/${APP_NAME}.app" "/Users/kaziomar/Desktop/SmartPDFMaker.app"
+rm -rf "/Users/kaziomar/Desktop/${APP_NAME}.app"
 cp -R "$APP_DIR" "/Users/kaziomar/Desktop/${APP_NAME}.app"
 touch "/Users/kaziomar/Desktop/${APP_NAME}.app"
 
-echo "🎉 Done! ${DISPLAY_NAME} is now ready on your Desktop with custom AppIcon!"
+# Create DMG with Applications shortcut
+echo "💿 Creating DMG with Applications shortcut..."
+DMG_STAGING="/tmp/dmg_staging_$$"
+mkdir -p "$DMG_STAGING"
+cp -R "$APP_DIR" "$DMG_STAGING/"
+ln -s /Applications "$DMG_STAGING/Applications"
+rm -f "$DIR/${APP_NAME}-v1.0.0.dmg" "/Users/kaziomar/Desktop/${APP_NAME}-v1.0.0.dmg"
+hdiutil create -volname "${DISPLAY_NAME}" -srcfolder "$DMG_STAGING" -ov -format UDZO "$DIR/${APP_NAME}-v1.0.0.dmg"
+cp "$DIR/${APP_NAME}-v1.0.0.dmg" "/Users/kaziomar/Desktop/${APP_NAME}-v1.0.0.dmg"
+rm -rf "$DMG_STAGING"
+
+# Create ZIP
+echo "📦 Creating ZIP release..."
+rm -f "$DIR/${APP_NAME}-v1.0.0-macOS.zip" "/Users/kaziomar/Desktop/${APP_NAME}-v1.0.0-macOS.zip"
+ditto -c -k --sequesterRsrc --keepParent "$APP_DIR" "$DIR/${APP_NAME}-v1.0.0-macOS.zip"
+cp "$DIR/${APP_NAME}-v1.0.0-macOS.zip" "/Users/kaziomar/Desktop/${APP_NAME}-v1.0.0-macOS.zip"
+
+echo "🎉 Done! Everything updated on Desktop!"

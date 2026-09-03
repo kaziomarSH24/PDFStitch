@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Resources/icon.png" width="128" height="128" alt="PDFStitch Logo" />
+</p>
+
 # PDFStitch 🧵📄
 
 **PDFStitch** is a lightweight, ultra-fast native macOS desktop application built with **Swift & SwiftUI** to combine images and PDFs, visually reorder pages via drag-and-drop or direct page jump, standardize pages to clean **A4 dimensions**, and export with smart file-size compression (e.g. Target < 9MB).

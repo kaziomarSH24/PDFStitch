@@ -4,6 +4,12 @@
 
 # PDFStitch 🧵📄
 
+<p align="center">
+  <a href="https://github.com/kaziomarSH24/PDFStitch/releases/latest">
+    <img src="https://img.shields.io/badge/Download-macOS%20(DMG)-blue?style=for-the-badge&logo=apple&logoColor=white" alt="Download for Mac" />
+  </a>
+</p>
+
 **PDFStitch** is a lightweight, ultra-fast native macOS desktop application built with **Swift & SwiftUI** to combine images and PDFs, visually reorder pages via drag-and-drop or direct page jump, standardize pages to clean **A4 dimensions**, and export with smart file-size compression (e.g. Target < 9MB).
 
 ---

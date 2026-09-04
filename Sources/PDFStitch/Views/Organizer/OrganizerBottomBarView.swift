@@ -43,9 +43,10 @@ struct OrganizerBottomBarView: View {
         let qual = organizerVM.useCustomSettings ? (organizerVM.customQuality / 100.0) : organizerVM.selectedPreset.jpegQuality
 
         let scale = (dpi / 72.0)
-        let perPageKB = max(30.0, scale * scale * 120.0 * qual)
+        let perPageKB = max(25.0, scale * scale * 120.0 * qual)
         let totalMB = (Double(organizerVM.items.count) * perPageKB) / 1024.0
 
-        return String(format: "Est. Size: ~%.1f MB (%@ | %@)", totalMB, organizerVM.selectedPreset.rawValue, organizerVM.selectedPageSize.rawValue)
+        let modeName = organizerVM.useCustomSettings ? "Custom \(Int(dpi)) DPI" : organizerVM.selectedPreset.rawValue
+        return String(format: "Est. Size: ~%.1f MB (%@ | %@)", totalMB, modeName, organizerVM.selectedPageSize.rawValue)
     }
 }

@@ -3,10 +3,10 @@ import CoreGraphics
 
 /// Preset configurations for compression quality and resolution
 public enum CompressionPreset: String, CaseIterable, Identifiable {
-    case maxCompress = "Maximum (< 5 MB)"
-    case balanced = "Balanced (< 9 MB)"
-    case highQuality = "High Quality"
-    case original = "Original Quality"
+    case maxCompress = "Low (Smallest Size)"
+    case balanced = "Medium (Balanced)"
+    case highQuality = "High (Print Quality)"
+    case original = "Maximum (Original)"
 
     public var id: String { rawValue }
 
@@ -33,10 +33,10 @@ public enum CompressionPreset: String, CaseIterable, Identifiable {
     /// Descriptive helper string for UI display
     public var description: String {
         switch self {
-        case .maxCompress: return "72 DPI - Great for email & chat"
-        case .balanced: return "85 DPI - Optimized for < 9MB limit"
-        case .highQuality: return "150 DPI - Sharp reading & printing"
-        case .original: return "Original DPI - Source quality"
+        case .maxCompress: return "72 DPI - Smallest file for email & web"
+        case .balanced: return "85 DPI - Recommended balance of clarity & size"
+        case .highQuality: return "150 DPI - Sharp for print & crisp reading"
+        case .original: return "300 DPI - Preserves original resolution"
         }
     }
 }

@@ -1,12 +1,13 @@
 import Foundation
 import AppKit
-import PDFKit
 
+/// Represents the origin type of a page (image or page from an existing PDF)
 public enum SourceType: Equatable {
     case image
     case pdfPage(pageIndex: Int, totalPages: Int)
 }
 
+/// Data model representing an individual page in the document grid
 public struct PageItem: Identifiable, Equatable {
     public let id: UUID
     public let sourceURL: URL

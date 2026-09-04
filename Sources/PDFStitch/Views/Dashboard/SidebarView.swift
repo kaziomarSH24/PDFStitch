@@ -1,18 +1,18 @@
 import SwiftUI
 
-/// Left sidebar matching reference design with primary red action buttons
+/// Left navigation sidebar with primary action buttons matching the reference design
 struct SidebarView: View {
     @ObservedObject var dashboardVM: DashboardViewModel
     @ObservedObject var organizerVM: OrganizerViewModel
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             // Primary Open PDF Button (Red)
-            Button(action: { dashboardVM.promptOpenPDF(organizerVM: organizerVM) }) {
-                HStack {
+            Button(action: { dashboardVM.promptOpenPDF() }) {
+                HStack(spacing: 8) {
                     Image(systemName: "folder.fill")
                     Text("Open PDF")
-                        .fontWeight(.semibold)
+                        .fontWeight(.bold)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
@@ -21,12 +21,12 @@ struct SidebarView: View {
             .tint(Color.red)
             .controlSize(.large)
 
-            // Create PDF Button
+            // Create / Merge PDF Button
             Button(action: {
-                dashboardVM.openTool(.organize)
                 organizerVM.items.removeAll()
+                dashboardVM.launchOrganizer(organizerVM: organizerVM)
             }) {
-                HStack {
+                HStack(spacing: 8) {
                     Image(systemName: "plus.circle")
                     Text("Create PDF")
                 }
@@ -36,20 +36,42 @@ struct SidebarView: View {
             .buttonStyle(.bordered)
             .controlSize(.regular)
 
+            Divider().padding(.vertical, 4)
+
+            // Navigation Links
+            VStack(alignment: .leading, spacing: 8) {
+                Label("Home", systemImage: "house.fill")
+                    .foregroundColor(.accentColor)
+                    .font(.system(size: 12, weight: .semibold))
+
+                Button(action: { dashboardVM.promptOpenPDF() }) {
+                    Label("View Document", systemImage: "eye.fill")
+                        .font(.system(size: 12))
+                        .foregroundColor(.primary)
+                }.buttonStyle(.plain)
+
+                Button(action: { dashboardVM.launchOrganizer(organizerVM: organizerVM) }) {
+                    Label("Organize Pages", systemImage: "square.stack.3d.up.fill")
+                        .font(.system(size: 12))
+                        .foregroundColor(.primary)
+                }.buttonStyle(.plain)
+            }
+            .padding(.horizontal, 4)
+
             Spacer()
 
-            // App Brand Info at bottom
-            HStack(spacing: 8) {
-                Image(systemName: "doc.on.doc.fill")
-                    .foregroundColor(.secondary)
+            // Footer info
+            HStack(spacing: 6) {
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundColor(.green)
                 Text("PDF Stitch v1.1")
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundColor(.secondary)
             }
-            .padding(.bottom, 8)
+            .padding(.horizontal, 4)
         }
-        .padding(14)
-        .frame(width: 170)
+        .padding(16)
+        .frame(width: 190)
         .background(Color(nsColor: .windowBackgroundColor))
     }
 }

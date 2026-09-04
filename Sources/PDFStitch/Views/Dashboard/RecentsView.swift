@@ -1,44 +1,71 @@
 import SwiftUI
 
-/// Section displaying recently viewed or exported documents
+/// Displays recent documents or a friendly empty placeholder
 struct RecentsView: View {
     @ObservedObject var dashboardVM: DashboardViewModel
-    @ObservedObject var organizerVM: OrganizerViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             // Header
             HStack {
                 Text("Recents")
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.system(size: 15, weight: .bold))
                 Spacer()
-                Image(systemName: "clock.arrow.circlepath")
-                    .foregroundColor(.secondary)
-            }
-
-            // Empty state placeholder
-            VStack(spacing: 12) {
-                Image(systemName: "doc.badge.sparkles")
-                    .font(.system(size: 44))
-                    .foregroundColor(.secondary.opacity(0.6))
-
-                Text("Files you have recently viewed or worked with will be listed here")
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-
-                Button(action: { dashboardVM.promptOpenPDF(organizerVM: organizerVM) }) {
-                    Text("Open PDF")
-                        .fontWeight(.semibold)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 4)
+                if !dashboardVM.recentFiles.isEmpty {
+                    Button("Clear") { dashboardVM.recentFiles.removeAll() }
+                        .font(.caption).buttonStyle(.plain).foregroundColor(.secondary)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(Color.red)
-                .controlSize(.regular)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 32)
-            .background(RoundedRectangle(cornerRadius: 10).fill(Color(nsColor: .controlBackgroundColor).opacity(0.5)))
+
+            if dashboardVM.recentFiles.isEmpty {
+                emptyPlaceholderView
+            } else {
+                recentFilesListView
+            }
+        }
+    }
+
+    private var emptyPlaceholderView: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "doc.badge.sparkles")
+                .font(.system(size: 38))
+                .foregroundColor(.secondary.opacity(0.5))
+
+            Text("Files you have recently viewed or worked with will be listed here")
+                .font(.system(size: 12))
+                .foregroundColor(.secondary)
+
+            Button(action: { dashboardVM.promptOpenPDF() }) {
+                Text("Open PDF")
+                    .fontWeight(.semibold)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 4)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(Color.red)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 28)
+        .background(RoundedRectangle(cornerRadius: 10).fill(Color(nsColor: .controlBackgroundColor).opacity(0.4)))
+    }
+
+    private var recentFilesListView: some View {
+        VStack(spacing: 6) {
+            ForEach(dashboardVM.recentFiles, id: \.self) { url in
+                Button(action: { dashboardVM.openPDF(at: url) }) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "doc.text.fill").font(.system(size: 20)).foregroundColor(.red)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(url.lastPathComponent).font(.system(size: 12, weight: .medium)).foregroundColor(.primary)
+                            Text(url.deletingLastPathComponent().path).font(.system(size: 10)).foregroundColor(.secondary).lineLimit(1)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right").font(.caption).foregroundColor(.secondary)
+                    }
+                    .padding(10)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Color(nsColor: .controlBackgroundColor)))
+                }.buttonStyle(.plain)
+            }
         }
     }
 }

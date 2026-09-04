@@ -6,16 +6,16 @@ struct DashboardView: View {
     @ObservedObject var organizerVM: OrganizerViewModel
 
     private let toolColumns = [
-        GridItem(.adaptive(minimum: 190, maximum: 220), spacing: 14)
+        GridItem(.adaptive(minimum: 180, maximum: 260), spacing: 14)
     ]
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 22) {
                 // Section 1: Popular Tools
-                VStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: 12) {
                     Text("Popular Tools")
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.system(size: 17, weight: .bold))
 
                     LazyVGrid(columns: toolColumns, spacing: 14) {
                         ForEach(AppTool.allCases) { tool in
@@ -29,7 +29,7 @@ struct DashboardView: View {
                 Divider()
 
                 // Section 2: Recents
-                RecentsView(dashboardVM: dashboardVM, organizerVM: organizerVM)
+                RecentsView(dashboardVM: dashboardVM)
             }
             .padding(24)
         }
@@ -37,11 +37,19 @@ struct DashboardView: View {
     }
 
     private func handleToolClick(_ tool: AppTool) {
-        dashboardVM.openTool(tool)
-        if tool == .compress {
+        switch tool {
+        case .organize:
+            dashboardVM.launchOrganizer(organizerVM: organizerVM)
+        case .compress:
             organizerVM.selectedPreset = .maxCompress
-        } else if tool == .organize {
-            organizerVM.selectedPreset = .balanced
+            dashboardVM.launchOrganizer(organizerVM: organizerVM)
+        case .create:
+            organizerVM.items.removeAll()
+            dashboardVM.launchOrganizer(organizerVM: organizerVM)
+        case .print:
+            dashboardVM.promptOpenPDF()
+        default:
+            dashboardVM.launchOrganizer(organizerVM: organizerVM)
         }
     }
 }

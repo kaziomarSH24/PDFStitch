@@ -27,7 +27,7 @@ struct RecentsView: View {
 
     private var emptyPlaceholderView: some View {
         VStack(spacing: 12) {
-            Image(systemName: "doc.badge.sparkles")
+            Image(systemName: "doc.text.magnifyingglass")
                 .font(.system(size: 38))
                 .foregroundColor(.secondary.opacity(0.5))
 

@@ -12,8 +12,8 @@ struct CustomCompressionPopoverView: View {
                     .font(.system(size: 13, weight: .bold))
                 Spacer()
                 Button("Reset") {
-                    organizerVM.customDPI = 85.0
-                    organizerVM.customQuality = 25.0
+                    organizerVM.customDPI = 110.0
+                    organizerVM.customQuality = 48.0
                 }
                 .font(.caption)
                 .buttonStyle(.plain)
@@ -32,7 +32,7 @@ struct CustomCompressionPopoverView: View {
                         .font(.caption.bold())
                         .foregroundColor(.accentColor)
                 }
-                Slider(value: $organizerVM.customDPI, in: 50...300, step: 5)
+                Slider(value: $organizerVM.customDPI, in: 60...250, step: 5)
             }
 
             // 2. JPEG Quality Slider
@@ -45,7 +45,7 @@ struct CustomCompressionPopoverView: View {
                         .font(.caption.bold())
                         .foregroundColor(.accentColor)
                 }
-                Slider(value: $organizerVM.customQuality, in: 10...100, step: 5)
+                Slider(value: $organizerVM.customQuality, in: 15...90, step: 5)
             }
 
             Divider()
@@ -79,16 +79,12 @@ struct CustomCompressionPopoverView: View {
             .background(RoundedRectangle(cornerRadius: 8).fill(Color(nsColor: .controlBackgroundColor)))
         }
         .padding(14)
-        .frame(width: 250)
+        .frame(width: 260)
     }
 
     // MARK: - Computed Properties
     private var estimatedMB: Double {
-        guard !organizerVM.items.isEmpty else { return 0.0 }
-        let scale = organizerVM.customDPI / 72.0
-        let qual = organizerVM.customQuality / 100.0
-        let perPageKB = max(25.0, scale * scale * 120.0 * qual)
-        return (Double(organizerVM.items.count) * perPageKB) / 1024.0
+        organizerVM.estimatedMB(dpi: organizerVM.customDPI, quality: organizerVM.customQuality)
     }
 
     private var gaugeColor: Color {
@@ -99,9 +95,9 @@ struct CustomCompressionPopoverView: View {
     }
 
     private var statusLabel: String {
-        if estimatedMB <= 5.0 { return "🟢 Very Small (Fast)" }
+        if estimatedMB <= 5.0 { return "🟢 Very Small" }
         if estimatedMB <= 9.0 { return "🔵 Recommended for Upload (< 9 MB)" }
-        if estimatedMB <= 15.0 { return "🟠 Medium Size" }
-        return "🔴 Large File"
+        if estimatedMB <= 15.0 { return "🟠 High Quality (> 9 MB)" }
+        return "🔴 Very Heavy"
     }
 }

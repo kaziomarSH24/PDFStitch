@@ -39,14 +39,8 @@ struct OrganizerBottomBarView: View {
 
     private var estimatedSizeSummary: String {
         guard !organizerVM.items.isEmpty else { return "Estimated Size: 0 MB" }
-        let dpi = organizerVM.useCustomSettings ? organizerVM.customDPI : organizerVM.selectedPreset.dpi
-        let qual = organizerVM.useCustomSettings ? (organizerVM.customQuality / 100.0) : organizerVM.selectedPreset.jpegQuality
-
-        let scale = (dpi / 72.0)
-        let perPageKB = max(25.0, scale * scale * 120.0 * qual)
-        let totalMB = (Double(organizerVM.items.count) * perPageKB) / 1024.0
-
-        let modeName = organizerVM.useCustomSettings ? "Custom \(Int(dpi)) DPI" : organizerVM.selectedPreset.rawValue
+        let totalMB = organizerVM.currentEstimatedMB
+        let modeName = organizerVM.useCustomSettings ? "Custom \(Int(organizerVM.customDPI)) DPI" : organizerVM.selectedPreset.rawValue
         return String(format: "Est. Size: ~%.1f MB (%@ | %@)", totalMB, modeName, organizerVM.selectedPageSize.rawValue)
     }
 }

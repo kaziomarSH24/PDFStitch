@@ -64,9 +64,9 @@ cat << EOF > "$CONTENTS_DIR/Info.plist"
 </plist>
 EOF
 
-# Clean attributes & codesign
+# Clean attributes & codesign with profiling entitlements
 xattr -cr "$APP_DIR"
-codesign --force --deep --sign - "$APP_DIR"
+codesign --force --deep --sign - --entitlements "$DIR/Entitlements.plist" "$APP_DIR"
 
 echo "✅ App bundle created at: $APP_DIR"
 echo "🚀 Copying to Desktop for easy access..."

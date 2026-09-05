@@ -13,6 +13,11 @@ let package = Package(
         .executableTarget(
             name: "PDFStitch",
             path: "Sources/PDFStitch"
+        ),
+        .testTarget(
+            name: "PDFStitchTests",
+            dependencies: ["PDFStitch"],
+            path: "Tests/PDFStitchTests"
         )
     ]
 )

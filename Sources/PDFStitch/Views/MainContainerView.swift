@@ -5,8 +5,6 @@ public struct MainContainerView: View {
     @StateObject private var dashboardVM = DashboardViewModel()
     @StateObject private var organizerVM = OrganizerViewModel()
 
-    public init() {}
-
     public var body: some View {
         Group {
             switch dashboardVM.mode {

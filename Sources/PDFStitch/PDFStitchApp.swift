@@ -7,7 +7,7 @@ struct PDFStitchApp: App {
         WindowGroup {
             MainContainerView()
         }
-        .windowStyle(.titleBar)
-        .windowToolbarStyle(.unified)
+        .windowStyle(.hiddenTitleBar) // Premium Native Look
+        .windowToolbarStyle(.unifiedCompact) // Blends toolbar smoothly
     }
 }

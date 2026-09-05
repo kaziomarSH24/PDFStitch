@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Thumbnail card representing an individual page with reordering, rotate, and delete controls
+/// Thumbnail card representing an individual page with modern Apple-grade cards, hover effects, and page jump
 struct PageCardView: View {
     let item: PageItem
     let pageIndex: Int
@@ -16,18 +16,18 @@ struct PageCardView: View {
     var body: some View {
         VStack(spacing: 8) {
             ZStack(alignment: .topLeading) {
-                // Card Thumbnail Surface
+                // Card Thumbnail Surface with Glass Border & Ambient Shadow
                 ZStack {
-                    RoundedRectangle(cornerRadius: 8)
+                    RoundedRectangle(cornerRadius: 12)
                         .fill(Color(nsColor: .controlBackgroundColor))
-                        .shadow(color: Color.black.opacity(isHovered ? 0.25 : 0.08), radius: isHovered ? 5 : 2, y: 1)
+                        .shadow(color: Color.black.opacity(isHovered ? 0.3 : 0.08), radius: isHovered ? 8 : 2, y: isHovered ? 4 : 1)
 
                     if let thumb = item.thumbnail {
                         Image(nsImage: thumb)
                             .resizable()
                             .scaledToFit()
                             .rotationEffect(.degrees(Double(item.rotationDegrees)))
-                            .padding(6)
+                            .padding(7)
                     } else {
                         Image(systemName: "doc")
                             .font(.system(size: 32))
@@ -35,6 +35,13 @@ struct PageCardView: View {
                     }
                 }
                 .frame(width: 145, height: 195)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(
+                            isHovered ? Color.accentColor.opacity(0.8) : Color.white.opacity(0.08),
+                            lineWidth: isHovered ? 1.5 : 1
+                        )
+                )
 
                 // Page Number Badge (Click to jump to page)
                 pageBadgeButton
@@ -42,18 +49,20 @@ struct PageCardView: View {
 
                 // Quick Action Buttons (Rotate & Delete)
                 actionButtons
-                    .offset(x: 92, y: 8)
-                    .opacity(isHovered ? 1.0 : 0.6)
+                    .offset(x: 90, y: 8)
+                    .opacity(isHovered ? 1.0 : 0.5)
             }
 
             // Filename label
             Text(item.title)
-                .font(.system(size: 11))
+                .font(.system(size: 11, design: .rounded))
                 .foregroundColor(.secondary)
                 .lineLimit(1)
                 .frame(width: 135)
         }
         .padding(6)
+        .scaleEffect(isHovered ? 1.02 : 1.0)
+        .animation(.spring(response: 0.25, dampingFraction: 0.75), value: isHovered)
         .onHover { isHovered = $0 }
         .contextMenu { contextMenuItems }
     }
@@ -65,8 +74,11 @@ struct PageCardView: View {
                 .font(.system(size: 11, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
                 .frame(width: 24, height: 24)
-                .background(Circle().fill(Color.accentColor))
-                .shadow(radius: 2)
+                .background(
+                    Circle()
+                        .fill(LinearGradient(colors: [Color.accentColor, Color.blue], startPoint: .top, endPoint: .bottom))
+                        .shadow(color: Color.accentColor.opacity(0.4), radius: 3, y: 1)
+                )
         }
         .buttonStyle(.plain)
         .popover(isPresented: $showMovePopover) { popoverContent }
@@ -75,16 +87,19 @@ struct PageCardView: View {
     private var actionButtons: some View {
         HStack(spacing: 4) {
             Button(action: onRotate) {
-                Image(systemName: "rotate.right").font(.system(size: 10, weight: .bold))
+                Image(systemName: "rotate.right")
+                    .font(.system(size: 9, weight: .bold))
                     .frame(width: 20, height: 20)
-                    .background(Circle().fill(Color(nsColor: .windowBackgroundColor)))
-            }.buttonStyle(.plain)
+                    .background(Circle().fill(Color(nsColor: .windowBackgroundColor).opacity(0.9)))
+            }.buttonStyle(.plain).help("Rotate 90° Clockwise")
 
             Button(action: onDelete) {
-                Image(systemName: "xmark").font(.system(size: 10, weight: .bold)).foregroundColor(.red)
+                Image(systemName: "xmark")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundColor(.red)
                     .frame(width: 20, height: 20)
-                    .background(Circle().fill(Color(nsColor: .windowBackgroundColor)))
-            }.buttonStyle(.plain)
+                    .background(Circle().fill(Color(nsColor: .windowBackgroundColor).opacity(0.9)))
+            }.buttonStyle(.plain).help("Delete Page")
         }
     }
 
